@@ -1,0 +1,12 @@
+BEKA ACADEMY TRANSPORTATION GUIDELINES & CODE OF CONDUCT
+
+This is a placeholder for the actual PDF guidelines.
+Replace /public/beka-transport-guidelines.pdf with the real file.
+
+Key Points:
+1. Punctuality - Be 5 minutes early at pick-up points
+2. Safety & Conduct - Follow instructions, keep seatbelts on
+3. Seat Allocation & Fees - Service starts after payment confirmation  
+4. Drop-off Security - Only authorized guardians for young students
+
+For the real PDF, supply the file at: /public/beka-transport-guidelines.pdf
