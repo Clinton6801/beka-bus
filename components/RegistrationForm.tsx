@@ -182,16 +182,20 @@ export default function RegistrationForm() {
             Save this code to check your registration status
           </p>
         </div>
-        <a
-          href={`/registration/${referenceCode}/status`}
-          className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg mb-3"
-        >
-          Check Status
-        </a>
-        <br />
-        <a href="/" className="text-green-600 hover:text-green-700 font-medium">
-          Return to Home
-        </a>
+        <div className="flex flex-col gap-3">
+          <a
+            href={`/registration/${referenceCode}/status`}
+            className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg"
+          >
+            Check Status
+          </a>
+          <a
+            href="/"
+            className="inline-block bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold py-3 px-6 rounded-lg"
+          >
+            Back to Home
+          </a>
+        </div>
       </div>
     );
   }
