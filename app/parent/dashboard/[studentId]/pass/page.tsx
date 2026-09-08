@@ -65,8 +65,12 @@ export default function BusPassPage() {
           .eq("id", studentId)
           .single();
 
-        if (studentError || studentData?.parent_id !== user.id) {
-          throw new Error("Unauthorized");
+        if (studentError || !studentData) {
+          throw new Error("Student not found");
+        }
+
+        if (studentData.parent_id !== user.id) {
+          throw new Error("Unauthorized - you do not own this student record");
         }
 
         // Extract route from nested structure

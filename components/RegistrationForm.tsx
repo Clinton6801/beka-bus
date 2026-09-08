@@ -143,7 +143,8 @@ export default function RegistrationForm() {
         body: JSON.stringify({
           parent: parentData,
           students,
-          routes, // Pass routes so server can validate fares
+          routes, // Pass routes so server can validate them
+          agreed_to_guidelines: agreedToGuidelines,
         }),
       });
 

@@ -23,11 +23,13 @@ export default function AccountsDashboard() {
   const router = useRouter();
   const [registrations, setRegistrations] = useState<RegistrationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending");
 
   useEffect(() => {
-    async function fetchData() {
+    async function checkAuthAndFetchData() {
       try {
         const client = createClient();
 
@@ -37,7 +39,12 @@ export default function AccountsDashboard() {
           error: userError,
         } = await client.auth.getUser();
 
-        if (userError || !user) throw new Error("Not authenticated");
+        if (userError || !user) {
+          setAuthChecked(true);
+          setIsAuthorized(false);
+          router.push("/accounts/login");
+          return;
+        }
 
         // Verify user is staff
         const { data: staffData, error: staffError } = await client
@@ -47,8 +54,14 @@ export default function AccountsDashboard() {
           .single();
 
         if (staffError || !staffData) {
-          throw new Error("Access denied. Staff account not found.");
+          setAuthChecked(true);
+          setIsAuthorized(false);
+          setError("Access denied. Staff account not found.");
+          return;
         }
+
+        setIsAuthorized(true);
+        setAuthChecked(true);
 
         // Fetch registrations with related data
         let query = client
@@ -71,15 +84,12 @@ export default function AccountsDashboard() {
         setRegistrations((regData || []) as unknown as RegistrationWithDetails[]);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load dashboard");
-        if (err instanceof Error && err.message.includes("Not authenticated")) {
-          router.push("/accounts/login");
-        }
       } finally {
         setLoading(false);
       }
     }
 
-    fetchData();
+    checkAuthAndFetchData();
   }, [statusFilter, router]);
 
   const handleLogout = async () => {
