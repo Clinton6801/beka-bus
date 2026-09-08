@@ -24,65 +24,73 @@ export default function ParentDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [parentName, setParentName] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchData = async () => {
+    try {
+      const client = createClient();
+
+      // Get current user
+      const {
+        data: { user },
+        error: userError,
+      } = await client.auth.getUser();
+
+      if (userError || !user) throw new Error("Not authenticated");
+
+      // Fetch parent details
+      const { data: parentData, error: parentError } = await client
+        .from("parents")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (parentError) throw parentError;
+      if (parentData) setParentName(parentData.full_name);
+
+      // Store parent ID for use in StudentCard
+      setParentId(user.id);
+
+      // Fetch students with their registrations
+      const { data: studentsData, error: studentsError } = await client
+        .from("students")
+        .select(
+          `
+          *,
+          registration:registrations(*, route:routes(*))
+        `
+        )
+        .eq("parent_id", user.id);
+
+      if (studentsError) throw studentsError;
+      setStudents((studentsData || []) as StudentWithRegistration[]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load dashboard");
+      // Redirect to login on auth error
+      if (err instanceof Error && err.message.includes("Not authenticated")) {
+        router.push("/parent/login");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const client = createClient();
-
-        // Get current user
-        const {
-          data: { user },
-          error: userError,
-        } = await client.auth.getUser();
-
-        if (userError || !user) throw new Error("Not authenticated");
-
-        // Fetch parent details
-        const { data: parentData, error: parentError } = await client
-          .from("parents")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-
-        if (parentError) throw parentError;
-        if (parentData) setParentName(parentData.full_name);
-
-        // Store parent ID for use in StudentCard
-        setParentId(user.id);
-
-        // Fetch students with their registrations
-        const { data: studentsData, error: studentsError } = await client
-          .from("students")
-          .select(
-            `
-            *,
-            registration:registrations(*, route:routes(*))
-          `
-          )
-          .eq("parent_id", user.id);
-
-        if (studentsError) throw studentsError;
-        setStudents((studentsData || []) as StudentWithRegistration[]);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load dashboard");
-        // Redirect to login on auth error
-        if (err instanceof Error && err.message.includes("Not authenticated")) {
-          router.push("/parent/login");
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchData();
-  }, [router]);
+  }, [router, refreshKey]);
 
   const handleLogout = async () => {
     const client = createClient();
     await client.auth.signOut();
     router.push("/");
     router.refresh();
+  };
+
+  const handleReceiptUploadSuccess = () => {
+    // Refresh the data after a short delay to ensure the database update is complete
+    setTimeout(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, 1000);
   };
 
   if (loading) {
@@ -161,7 +169,12 @@ export default function ParentDashboard() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
             {students.map((student) => (
-              <StudentCard key={student.id} student={student} parentId={parentId} />
+              <StudentCard 
+                key={student.id} 
+                student={student} 
+                parentId={parentId} 
+                onReceiptUploadSuccess={handleReceiptUploadSuccess}
+              />
             ))}
           </div>
         )}
@@ -173,9 +186,10 @@ export default function ParentDashboard() {
 interface StudentCardProps {
   student: StudentWithRegistration;
   parentId: string;
+  onReceiptUploadSuccess: () => void;
 }
 
-function StudentCard({ student, parentId }: StudentCardProps) {
+function StudentCard({ student, parentId, onReceiptUploadSuccess }: StudentCardProps) {
   const registration = Array.isArray(student.registration)
     ? student.registration[0]
     : student.registration;
@@ -320,10 +334,7 @@ function StudentCard({ student, parentId }: StudentCardProps) {
                 registrationId={registration.id}
                 referenceCode={registration.reference_code}
                 existingPath={registration.proof_of_payment_url}
-                onUploadSuccess={() => {
-                  // Refresh data
-                  window.location.reload();
-                }}
+                onUploadSuccess={onReceiptUploadSuccess}
               />
             </div>
           </div>

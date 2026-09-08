@@ -75,6 +75,15 @@ export default function StatusPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
+          <div className="mb-8">
+            <a
+              href="/"
+              className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm"
+            >
+              ← Back to Home
+            </a>
+          </div>
+
           <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
             <div className="text-5xl mb-4">⚠️</div>
             <h1 className="text-2xl font-bold text-gray-900 mb-3">
@@ -116,6 +125,15 @@ export default function StatusPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
+        <div className="mb-8">
+          <a
+            href="/"
+            className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm"
+          >
+            ← Back to Home
+          </a>
+        </div>
+
         <div className={`${statusConfig.bg} border-l-4 rounded-2xl p-8 mb-8`}>
           <div className="flex items-start gap-4">
             <div className="text-4xl">{statusConfig.icon}</div>
@@ -243,7 +261,7 @@ export default function StatusPage() {
         <div className="mt-8 text-center">
           <a
             href="/"
-            className="text-purple-600 hover:text-purple-700 font-medium"
+            className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             Return to Home
           </a>

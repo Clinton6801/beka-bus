@@ -27,70 +27,72 @@ export default function AccountsDashboard() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending");
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchRegistrations = async () => {
+    try {
+      setLoading(true);
+      const client = createClient();
+
+      // Get current user
+      const {
+        data: { user },
+        error: userError,
+      } = await client.auth.getUser();
+
+      if (userError || !user) {
+        setAuthChecked(true);
+        setIsAuthorized(false);
+        router.push("/accounts/login");
+        return;
+      }
+
+      // Verify user is staff
+      const { data: staffData, error: staffError } = await client
+        .from("staff")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (staffError || !staffData) {
+        setAuthChecked(true);
+        setIsAuthorized(false);
+        setError("Access denied. Staff account not found.");
+        return;
+      }
+
+      setIsAuthorized(true);
+      setAuthChecked(true);
+
+      // Fetch registrations with related data
+      let query = client
+        .from("registrations")
+        .select(
+          `
+          *,
+          student:students(*, parent:parents(*))
+        `
+        )
+        .order("created_at", { ascending: false });
+
+      if (statusFilter !== "all") {
+        query = query.eq("status", statusFilter);
+      }
+
+      const { data: regData, error: regError } = await query;
+
+      if (regError) throw regError;
+      setRegistrations((regData || []) as unknown as RegistrationWithDetails[]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function checkAuthAndFetchData() {
-      try {
-        const client = createClient();
-
-        // Get current user
-        const {
-          data: { user },
-          error: userError,
-        } = await client.auth.getUser();
-
-        if (userError || !user) {
-          setAuthChecked(true);
-          setIsAuthorized(false);
-          router.push("/accounts/login");
-          return;
-        }
-
-        // Verify user is staff
-        const { data: staffData, error: staffError } = await client
-          .from("staff")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-
-        if (staffError || !staffData) {
-          setAuthChecked(true);
-          setIsAuthorized(false);
-          setError("Access denied. Staff account not found.");
-          return;
-        }
-
-        setIsAuthorized(true);
-        setAuthChecked(true);
-
-        // Fetch registrations with related data
-        let query = client
-          .from("registrations")
-          .select(
-            `
-            *,
-            student:students(*, parent:parents(*))
-          `
-          )
-          .order("created_at", { ascending: false });
-
-        if (statusFilter !== "all") {
-          query = query.eq("status", statusFilter);
-        }
-
-        const { data: regData, error: regError } = await query;
-
-        if (regError) throw regError;
-        setRegistrations((regData || []) as unknown as RegistrationWithDetails[]);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load dashboard");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    checkAuthAndFetchData();
-  }, [statusFilter, router]);
+    fetchRegistrations();
+  }, [statusFilter, router, refreshKey]);
 
   const handleLogout = async () => {
     const client = createClient();
@@ -125,6 +127,12 @@ export default function AccountsDashboard() {
               </p>
             </div>
             <div className="flex gap-3 flex-col sm:flex-row">
+              <button
+                onClick={() => setRefreshKey((prev) => prev + 1)}
+                className="px-6 py-2.5 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium rounded-lg transition-colors text-sm"
+              >
+                🔄 Refresh
+              </button>
               <a
                 href="/accounts/verify"
                 className="px-6 py-2.5 border border-blue-300 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors text-sm"

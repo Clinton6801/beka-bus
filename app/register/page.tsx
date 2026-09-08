@@ -9,6 +9,15 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
+        <div className="mb-8">
+          <a
+            href="/"
+            className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium text-sm"
+          >
+            ← Back to Home
+          </a>
+        </div>
+
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
             Register Your Children

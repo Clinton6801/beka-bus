@@ -20,11 +20,12 @@ export default function ReceiptUpload({
 }: ReceiptUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadedPath, setUploadedPath] = useState<string | null>(existingPath || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
-    if (!file || uploading) return; // Prevent concurrent uploads
+    if (!file || uploading) return;
 
     // Validate file type
     const validTypes = ["image/jpeg", "image/png", "application/pdf"];
@@ -51,35 +52,39 @@ export default function ReceiptUpload({
       const filename = `${registrationId}-${timestamp}.${fileExt}`;
       const storagePath = `${parentId}/${registrationId}/${filename}`;
 
-      // Upload to Supabase Storage (abort if already uploading same file)
-      const abortController = new AbortController();
-      const { error: uploadError } = await client.storage
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await client.storage
         .from("payment-receipts")
         .upload(storagePath, file, {
           upsert: false,
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        throw uploadError;
+      }
 
       // Update registration with proof_of_payment_url
-      // Check if receipt is still pending before updating
       const { data: regData, error: fetchError } = await client
         .from("registrations")
         .select("status, proof_of_payment_url")
         .eq("id", registrationId)
         .single();
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        throw fetchError;
+      }
 
-      // Only update if status is pending and no receipt already uploaded (prevent overwrites from race condition)
+      // Only update if status is pending and no receipt already uploaded
       if (regData?.status === "pending") {
-        const { error: updateError } = await client
+        const { data: updateData, error: updateError } = await client
           .from("registrations")
           .update({ proof_of_payment_url: storagePath })
           .eq("id", registrationId)
           .eq("status", "pending");
 
-        if (updateError) throw updateError;
+        if (updateError) {
+          throw updateError;
+        }
       }
 
       // Reset file input
@@ -87,15 +92,18 @@ export default function ReceiptUpload({
         fileInputRef.current.value = "";
       }
 
+      // Update local state to show success immediately
+      setUploadedPath(storagePath);
       onUploadSuccess(storagePath);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      const errorMsg = err instanceof Error ? err.message : "Upload failed";
+      setError(errorMsg);
     } finally {
       setUploading(false);
     }
   };
 
-  if (existingPath) {
+  if (uploadedPath) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
@@ -110,7 +118,7 @@ export default function ReceiptUpload({
           </button>
         </div>
         <p className="text-xs text-green-600">
-          {existingPath.split("/").pop()}
+          {uploadedPath.split("/").pop()}
         </p>
         <p className="text-xs text-gray-600 mt-2">
           Awaiting confirmation from the accounts office.
@@ -129,7 +137,10 @@ export default function ReceiptUpload({
 
   return (
     <div className="space-y-3">
-      <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-purple-400 hover:bg-purple-50 transition-colors">
+      <div 
+        className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-purple-400 hover:bg-purple-50 transition-colors"
+        onClick={() => fileInputRef.current?.click()}
+      >
         <input
           ref={fileInputRef}
           type="file"
@@ -138,12 +149,7 @@ export default function ReceiptUpload({
           className="hidden"
           accept=".jpg,.jpeg,.png,.pdf"
         />
-        <button
-          type="button"
-          onClick={() => !uploading && fileInputRef.current?.click()}
-          disabled={uploading}
-          className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <div className="pointer-events-none">
           <p className="text-2xl mb-2">📎</p>
           <p className="text-sm font-semibold text-gray-700 mb-1">
             {uploading ? "Uploading..." : "Upload Payment Receipt"}
@@ -151,7 +157,7 @@ export default function ReceiptUpload({
           <p className="text-xs text-gray-600">
             JPG, PNG, or PDF (max 5MB)
           </p>
-        </button>
+        </div>
       </div>
 
       {error && (
