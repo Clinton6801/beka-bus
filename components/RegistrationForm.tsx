@@ -213,7 +213,7 @@ export default function RegistrationForm() {
               onChange={(e) =>
                 handleParentChange("full_name", e.target.value)
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
               required
             />
           </div>
@@ -226,7 +226,7 @@ export default function RegistrationForm() {
               type="email"
               value={parentData.email}
               onChange={(e) => handleParentChange("email", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
               required
             />
           </div>
@@ -239,7 +239,7 @@ export default function RegistrationForm() {
               type="tel"
               value={parentData.phone}
               onChange={(e) => handleParentChange("phone", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
               required
             />
           </div>
@@ -252,7 +252,7 @@ export default function RegistrationForm() {
               type="text"
               value={parentData.address}
               onChange={(e) => handleParentChange("address", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
             />
           </div>
 
@@ -332,7 +332,7 @@ export default function RegistrationForm() {
                   onChange={(e) =>
                     handleStudentChange(index, "full_name", e.target.value)
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                   required
                 />
               </div>
@@ -348,7 +348,7 @@ export default function RegistrationForm() {
                   onChange={(e) =>
                     handleStudentChange(index, "class_level", e.target.value)
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                   required
                 />
               </div>
@@ -362,7 +362,7 @@ export default function RegistrationForm() {
                   onChange={(e) =>
                     handleStudentChange(index, "route_id", e.target.value)
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                   required
                 >
                   <option value="">Select a route...</option>

@@ -31,7 +31,7 @@ export default function PasswordInput({
           type={showPassword ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full px-4 py-2 pr-12 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+          className={`w-full px-4 py-2 pr-12 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-gray-900 ${
             error ? "border-red-300" : "border-gray-300"
           }`}
           placeholder={placeholder}
