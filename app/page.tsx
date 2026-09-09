@@ -31,7 +31,7 @@ export default function Home() {
           
           <p className="text-sm sm:text-base lg:text-lg text-white/95 mb-4 sm:mb-6 leading-relaxed drop-shadow-lg" style={{textShadow: '1px 1px 4px rgba(0,0,0,0.7)'}}>
             BEKA Academy's dedicated bus service for safe, reliable student transportation.
-            Calculate your fare, register your children, and get your digital bus pass instantly.
+            Calculate your fare and register your children in minutes.
           </p>
 
           <div className="bg-white/95 rounded-lg shadow-md p-3 sm:p-5 inline-block mb-4 sm:mb-10 mx-auto max-w-sm border border-white/50">
@@ -58,7 +58,7 @@ export default function Home() {
 
       {/* Features Section */}
       <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-50 to-purple-100">
-        <div className="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="max-w-6xl mx-auto grid sm:grid-cols-2 gap-6 sm:gap-8">
           <div className="text-center">
             <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">🚌</div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">
@@ -76,16 +76,6 @@ export default function Home() {
             </h3>
             <p className="text-sm sm:text-base text-gray-600">
               See exactly what you'll pay before registering. All fees clearly displayed.
-            </p>
-          </div>
-
-          <div className="text-center">
-            <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">🎫</div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">
-              Digital Bus Pass
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600">
-              Get a QR-coded digital pass after confirmation. Easy scanning at the bus gate.
             </p>
           </div>
         </div>
@@ -111,7 +101,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Ready to Register?</h2>
           <p className="text-base sm:text-lg mb-6 sm:mb-8 opacity-90 px-2">
-            Get your children registered and receive their digital bus pass today.
+            Get your children registered for safe and reliable bus service this term.
           </p>
           <a
             href="/register"

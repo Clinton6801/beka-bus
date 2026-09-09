@@ -133,12 +133,6 @@ export default function AccountsDashboard() {
               >
                 🔄 Refresh
               </button>
-              <a
-                href="/accounts/verify"
-                className="px-6 py-2.5 border border-blue-300 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors text-sm"
-              >
-                🔍 Verify Passes
-              </a>
               <button
                 onClick={handleLogout}
                 className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors text-sm"

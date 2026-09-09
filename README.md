@@ -1,15 +1,14 @@
 # BEKA Academy Bus Portal
 
-School bus registration, fare calculation, and digital pass system for BEKA Academy (Umuahia).
+School bus registration and fare calculation system for BEKA Academy (Umuahia).
 
-**Payment model:** Manual — parent registers online, pays fees at the school, accounts office confirms payment, system auto-generates a QR bus pass.
+**Payment model:** Manual — parent registers online, pays fees at the school, accounts office confirms payment.
 
 ## Stack
-- Next.js 15 (App Router) + TypeScript
+- Next.js 16.3.4 (App Router) + TypeScript
 - Tailwind CSS v4
 - Supabase (Auth + Postgres + RLS + Storage)
 - Resend (transactional email)
-- qrcode.react (bus pass QR generation)
 
 ## How to use this folder with Kiro
 
@@ -41,5 +40,4 @@ beka-bus-portal/
 - [ ] Real Umuahia route list + fare amounts (schema ships with 2 seed placeholder routes)
 - [ ] Discount tier percentages for multiple children
 - [ ] School's payment instructions (bank details / bursary hours) for confirmation email
-- [ ] Term dates (for bus pass `valid_until`)
 - [ ] BEKA branding — logo, colors

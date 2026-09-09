@@ -114,7 +114,7 @@ export default function ParentDashboard() {
               Welcome, {parentName || "Parent"}
             </h1>
             <p className="text-gray-600 mt-1">
-              View your children's registration status and bus passes
+              View your children's registration status
             </p>
           </div>
           <button
@@ -267,12 +267,11 @@ function StudentCard({ student, parentId, onReceiptUploadSuccess }: StudentCardP
 
         {/* Action Button */}
         {registration?.status === "confirmed" && (
-          <a
-            href={`/parent/dashboard/${student.id}/pass`}
-            className="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 rounded-lg transition-colors mt-4"
-          >
-            View Bus Pass
-          </a>
+          <div className="bg-green-50 rounded-lg p-4 border border-green-200 text-center">
+            <p className="text-sm font-semibold text-green-700">
+              ✓ Registration confirmed — your child is cleared for bus service this term
+            </p>
+          </div>
         )}
 
         {registration?.status === "pending" && (

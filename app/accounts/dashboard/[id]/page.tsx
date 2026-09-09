@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useParams } from "next/navigation";
 import { Database } from "@/types/database";
-import { nanoid } from "nanoid";
 import ReceiptViewer from "@/components/ReceiptViewer";
 
 type Registration = Database["public"]["Tables"]["registrations"]["Row"];
@@ -107,47 +106,39 @@ export default function RegistrationDetailPage() {
     try {
       const client = createClient();
 
-      // Update registration status to confirmed
+      // Get current user to set confirmed_by
+      const {
+        data: { user },
+        error: userError,
+      } = await client.auth.getUser();
+
+      if (userError || !user) throw new Error("Not authenticated");
+
+      // Update registration status to confirmed with staff info
       const { error: updateError } = await client
         .from("registrations")
-        .update({ status: "confirmed" })
+        .update({
+          status: "confirmed",
+          confirmed_by: user.id,
+          confirmed_at: new Date().toISOString(),
+        })
         .eq("id", registration.id);
 
       if (updateError) throw updateError;
 
-      // Create bus pass
-      const qrToken = nanoid(32);
-      const nextYear = new Date();
-      nextYear.setFullYear(nextYear.getFullYear() + 1);
-
-      const { error: passError } = await client.from("bus_passes").insert({
-        registration_id: registration.id,
-        student_id: registration.student?.id,
-        qr_token: qrToken,
-        term: registration.term,
-        valid_until: nextYear.toISOString().split("T")[0],
-      });
-
-      if (passError) throw passError;
-
       // Send confirmation email to parent
-      // (using our stub email service)
-      const parentEmail = registration.parent?.email || 
-        (Array.isArray(registration.student) 
-          ? registration.student[0]?.parent_id 
-          : registration.student?.parent_id);
-      
+      const parentEmail = registration.parent?.email;
       if (parentEmail && typeof parentEmail === "string") {
         await fetch("/api/email/send", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             to: parentEmail,
-            subject: `Bus Pass Confirmed - ${registration.student?.full_name}`,
+            subject: `Registration Confirmed - ${registration.student?.full_name}`,
             html: `
               <p>Dear ${registration.parent?.full_name || "Parent"},</p>
-              <p>The registration for ${registration.student?.full_name} has been confirmed!</p>
-              <p>Your bus pass is now ready. Log in to your parent portal to view it.</p>
+              <p>The registration for <strong>${registration.student?.full_name}</strong> has been confirmed!</p>
+              <p>Your child is now cleared for bus service this term.</p>
               <p>Reference Code: <strong>${registration.reference_code}</strong></p>
               <p>Best regards,<br/>BEKA Academy Transit Team</p>
             `,

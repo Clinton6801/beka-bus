@@ -1,12 +1,12 @@
 /**
  * Payment Information Configuration
- * Fill in with actual school bank details
+ * BEKA Academy Bank Details
  */
 
 export const paymentInfo = {
-  bankName: "First Bank Nigeria",
-  accountName: "BEKA Academy Student Transit",
-  accountNumber: "1234567890",
+  bankName: "United Bank for Africa",
+  accountName: "BEKA Academy",
+  accountNumber: "1023493204",
   accountEmail: "accounts@beka.ng",
   accountPhone: "+234 123 456 7890",
   paymentNote:
