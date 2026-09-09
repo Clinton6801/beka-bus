@@ -2,7 +2,7 @@ import RegistrationForm from "@/components/RegistrationForm";
 
 export const metadata = {
   title: "Register Your Child - BEKA Bus Portal",
-  description: "Register your child for BEKA Academy's student transit system",
+  description: "Register your child for BEKA Academy's learner transit system",
 };
 
 export default function RegisterPage() {
@@ -24,7 +24,7 @@ export default function RegisterPage() {
           </h1>
           <p className="text-base sm:text-lg text-gray-600">
             Complete this form to register your children for BEKA Academy's
-            student transit system. You'll receive a reference code to track
+            learner transit system. You'll receive a reference code to track
             your registration.
           </p>
         </div>

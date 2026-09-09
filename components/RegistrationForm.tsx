@@ -133,7 +133,7 @@ export default function RegistrationForm() {
         students.length === 0 ||
         students.some((s) => !s.full_name || !s.class_level || !s.route_id)
       ) {
-        throw new Error("Please fill in all student details");
+        throw new Error("Please fill in all learner details");
       }
 
       // Call server API
@@ -299,11 +299,11 @@ export default function RegistrationForm() {
         </div>
       )}
 
-      {/* Step 2: Student Details */}
+      {/* Step 2: Learner Details */}
       {step === 2 && (
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Student Details
+            Learner Details
           </h2>
 
           {students.map((student, index) => (
@@ -313,7 +313,7 @@ export default function RegistrationForm() {
             >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-gray-900">
-                  Student {index + 1}
+                  Learner {index + 1}
                 </h3>
                 {students.length > 1 && (
                   <button
@@ -347,7 +347,7 @@ export default function RegistrationForm() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g., JSS 1, SS 2"
+                  placeholder="e.g., Nursery 1, Primary 4"
                   value={student.class_level}
                   onChange={(e) =>
                     handleStudentChange(index, "class_level", e.target.value)
